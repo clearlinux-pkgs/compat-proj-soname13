@@ -4,63 +4,29 @@
 #
 Name     : compat-proj-soname13
 Version  : 5.2.0
-Release  : 1
+Release  : 2
 URL      : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Source0  : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Summary  : Cartographic Projections Library.
 Group    : Development/Tools
 License  : MIT
-Requires: compat-proj-soname13-bin = %{version}-%{release}
-Requires: compat-proj-soname13-data = %{version}-%{release}
 Requires: compat-proj-soname13-lib = %{version}-%{release}
 Requires: compat-proj-soname13-license = %{version}-%{release}
-Requires: compat-proj-soname13-man = %{version}-%{release}
+BuildRequires : apache-ant
 BuildRequires : buildreq-cmake
+BuildRequires : buildreq-mvn
+# Suppress generation of debuginfo
+%global debug_package %{nil}
 
 %description
-# PROJ bridge to Java
-This is the third release of JNI wrappers for the main PROJ functions.
-The first release of JNI wrappers were created by http://www.hydrologis.com.
-The second release of JNI wrappers were created by http://www.geoapi.org.
-This release is compatible with any PROJ versions from 4.8 to 5
-provided that PROJ has been compiled as described below.
-
-%package bin
-Summary: bin components for the compat-proj-soname13 package.
-Group: Binaries
-Requires: compat-proj-soname13-data = %{version}-%{release}
-Requires: compat-proj-soname13-license = %{version}-%{release}
-
-%description bin
-bin components for the compat-proj-soname13 package.
-
-
-%package data
-Summary: data components for the compat-proj-soname13 package.
-Group: Data
-
-%description data
-data components for the compat-proj-soname13 package.
-
-
-%package dev
-Summary: dev components for the compat-proj-soname13 package.
-Group: Development
-Requires: compat-proj-soname13-lib = %{version}-%{release}
-Requires: compat-proj-soname13-bin = %{version}-%{release}
-Requires: compat-proj-soname13-data = %{version}-%{release}
-Provides: compat-proj-soname13-devel = %{version}-%{release}
-Requires: compat-proj-soname13 = %{version}-%{release}
-Requires: compat-proj-soname13 = %{version}-%{release}
-
-%description dev
-dev components for the compat-proj-soname13 package.
-
+# PROJ
+PROJ is a generic coordinate transformation software, that transforms
+coordinates from one coordinate reference system (CRS) to another.
+This includes cartographic projections as well as geodetic transformations.
 
 %package lib
 Summary: lib components for the compat-proj-soname13 package.
 Group: Libraries
-Requires: compat-proj-soname13-data = %{version}-%{release}
 Requires: compat-proj-soname13-license = %{version}-%{release}
 
 %description lib
@@ -75,14 +41,6 @@ Group: Default
 license components for the compat-proj-soname13 package.
 
 
-%package man
-Summary: man components for the compat-proj-soname13 package.
-Group: Default
-
-%description man
-man components for the compat-proj-soname13 package.
-
-
 %prep
 %setup -q -n proj-5.2.0
 
@@ -90,8 +48,9 @@ man components for the compat-proj-soname13 package.
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1558941966
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1567833911
+export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -100,63 +59,60 @@ export CXXFLAGS="$CXXFLAGS -fno-lto "
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1558941966
+export SOURCE_DATE_EPOCH=1567833911
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-proj-soname13
 cp COPYING %{buildroot}/usr/share/package-licenses/compat-proj-soname13/COPYING
 %make_install
+## Remove excluded files
+rm -f %{buildroot}/usr/bin/cct
+rm -f %{buildroot}/usr/bin/cs2cs
+rm -f %{buildroot}/usr/bin/geod
+rm -f %{buildroot}/usr/bin/gie
+rm -f %{buildroot}/usr/bin/invgeod
+rm -f %{buildroot}/usr/bin/invproj
+rm -f %{buildroot}/usr/bin/nad2bin
+rm -f %{buildroot}/usr/bin/proj
+rm -f %{buildroot}/usr/include/geodesic.h
+rm -f %{buildroot}/usr/include/org_proj4_PJ.h
+rm -f %{buildroot}/usr/include/proj.h
+rm -f %{buildroot}/usr/include/proj_api.h
+rm -f %{buildroot}/usr/include/projects.h
+rm -f %{buildroot}/usr/lib64/libproj.so
+rm -f %{buildroot}/usr/lib64/pkgconfig/proj.pc
+rm -f %{buildroot}/usr/share/man/man1/cct.1
+rm -f %{buildroot}/usr/share/man/man1/cs2cs.1
+rm -f %{buildroot}/usr/share/man/man1/geod.1
+rm -f %{buildroot}/usr/share/man/man1/gie.1
+rm -f %{buildroot}/usr/share/man/man1/proj.1
+rm -f %{buildroot}/usr/share/man/man3/geodesic.3
+rm -f %{buildroot}/usr/share/man/man3/pj_init.3
+rm -f %{buildroot}/usr/share/proj/CH
+rm -f %{buildroot}/usr/share/proj/GL27
+rm -f %{buildroot}/usr/share/proj/IGNF
+rm -f %{buildroot}/usr/share/proj/ITRF2000
+rm -f %{buildroot}/usr/share/proj/ITRF2008
+rm -f %{buildroot}/usr/share/proj/ITRF2014
+rm -f %{buildroot}/usr/share/proj/epsg
+rm -f %{buildroot}/usr/share/proj/esri
+rm -f %{buildroot}/usr/share/proj/esri.extra
+rm -f %{buildroot}/usr/share/proj/nad.lst
+rm -f %{buildroot}/usr/share/proj/nad27
+rm -f %{buildroot}/usr/share/proj/nad83
+rm -f %{buildroot}/usr/share/proj/null
+rm -f %{buildroot}/usr/share/proj/other.extra
+rm -f %{buildroot}/usr/share/proj/proj_def.dat
+rm -f %{buildroot}/usr/share/proj/world
 
 %files
 %defattr(-,root,root,-)
-
-%files bin
-%defattr(-,root,root,-)
-%exclude /usr/bin/cct
-%exclude /usr/bin/cs2cs
-%exclude /usr/bin/geod
-%exclude /usr/bin/gie
-%exclude /usr/bin/invgeod
-%exclude /usr/bin/invproj
-%exclude /usr/bin/nad2bin
-%exclude /usr/bin/proj
-
-%files data
-%defattr(-,root,root,-)
-%exclude /usr/share/proj/CH
-%exclude /usr/share/proj/GL27
-%exclude /usr/share/proj/IGNF
-%exclude /usr/share/proj/ITRF2000
-%exclude /usr/share/proj/ITRF2008
-%exclude /usr/share/proj/ITRF2014
-%exclude /usr/share/proj/epsg
-%exclude /usr/share/proj/esri
-%exclude /usr/share/proj/esri.extra
-%exclude /usr/share/proj/nad.lst
-%exclude /usr/share/proj/nad27
-%exclude /usr/share/proj/nad83
-%exclude /usr/share/proj/null
-%exclude /usr/share/proj/other.extra
-%exclude /usr/share/proj/proj_def.dat
-%exclude /usr/share/proj/world
-
-%files dev
-%defattr(-,root,root,-)
-%exclude /usr/include/geodesic.h
-%exclude /usr/include/org_proj4_PJ.h
-%exclude /usr/include/proj.h
-%exclude /usr/include/proj_api.h
-%exclude /usr/include/projects.h
-%exclude /usr/lib64/libproj.so
-%exclude /usr/lib64/pkgconfig/proj.pc
-%exclude /usr/share/man/man3/geodesic.3
-%exclude /usr/share/man/man3/pj_init.3
 
 %files lib
 %defattr(-,root,root,-)
@@ -165,12 +121,4 @@ cp COPYING %{buildroot}/usr/share/package-licenses/compat-proj-soname13/COPYING
 
 %files license
 %defattr(0644,root,root,0755)
-%exclude /usr/share/package-licenses/compat-proj-soname13/COPYING
-
-%files man
-%defattr(0644,root,root,0755)
-%exclude /usr/share/man/man1/cct.1
-%exclude /usr/share/man/man1/cs2cs.1
-%exclude /usr/share/man/man1/geod.1
-%exclude /usr/share/man/man1/gie.1
-%exclude /usr/share/man/man1/proj.1
+/usr/share/package-licenses/compat-proj-soname13/COPYING
