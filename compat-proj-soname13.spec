@@ -4,7 +4,7 @@
 #
 Name     : compat-proj-soname13
 Version  : 5.2.0
-Release  : 2
+Release  : 3
 URL      : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Source0  : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Summary  : Cartographic Projections Library.
