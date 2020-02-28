@@ -4,7 +4,7 @@
 #
 Name     : compat-proj-soname13
 Version  : 5.2.0
-Release  : 3
+Release  : 4
 URL      : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Source0  : http://download.osgeo.org/proj/proj-5.2.0.tar.gz
 Summary  : Cartographic Projections Library.
@@ -14,7 +14,6 @@ Requires: compat-proj-soname13-lib = %{version}-%{release}
 Requires: compat-proj-soname13-license = %{version}-%{release}
 BuildRequires : apache-ant
 BuildRequires : buildreq-cmake
-BuildRequires : buildreq-mvn
 # Suppress generation of debuginfo
 %global debug_package %{nil}
 
@@ -43,13 +42,14 @@ license components for the compat-proj-soname13 package.
 
 %prep
 %setup -q -n proj-5.2.0
+cd %{_builddir}/proj-5.2.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1567833911
+export SOURCE_DATE_EPOCH=1582921275
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -66,10 +66,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1567833911
+export SOURCE_DATE_EPOCH=1582921275
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-proj-soname13
-cp COPYING %{buildroot}/usr/share/package-licenses/compat-proj-soname13/COPYING
+cp %{_builddir}/proj-5.2.0/COPYING %{buildroot}/usr/share/package-licenses/compat-proj-soname13/ff8d569976b75bad2e71d78ad1df7a422f1165c9
 %make_install
 ## Remove excluded files
 rm -f %{buildroot}/usr/bin/cct
@@ -121,4 +121,4 @@ rm -f %{buildroot}/usr/share/proj/world
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/compat-proj-soname13/COPYING
+/usr/share/package-licenses/compat-proj-soname13/ff8d569976b75bad2e71d78ad1df7a422f1165c9
